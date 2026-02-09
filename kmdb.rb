@@ -46,7 +46,9 @@
 #   Homework 2 assignment in Canvas
 
 # Successful sample output is as shown:
-
+Studio.destroy_all
+warner_bros = Studio.create!({"name" => "Warner Bros"})
+puts warner_bros.name
 # Movies
 # ======
 # Batman Begins          2005           PG-13  Warner Bros.
