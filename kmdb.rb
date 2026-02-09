@@ -46,17 +46,63 @@
 #   Homework 2 assignment in Canvas
 
 # Successful sample output is as shown:
+
+Role.destroy_all
+Movie.destroy_all
+Actor.destroy_all
+Agent.destroy_all
 Studio.destroy_all
-warner_bros = Studio.create!({"name" => "Warner Bros"})
-puts warner_bros.name
+warner_bros = Studio.create!({"name" => "Warner Bros."})
+
+bb = Movie.create!({ "title" => "Batman Begins", "year_released" => 2005, "rated" => "PG-13", "studio_id" => warner_bros.id })
+tdk = Movie.create!({ "title" => "The Dark Knight", "year_released" => 2008, "rated" => "PG-13", "studio_id" => warner_bros.id })
+tdkr = Movie.create!({ "title" => "The Dark Knight Rises", "year_released" => 2012, "rated" => "PG-13", "studio_id" => warner_bros.id })
+
+bale       = Actor.create!({ "name" => "Christian Bale" })
+caine      = Actor.create!({ "name" => "Michael Caine" })
+neeson     = Actor.create!({ "name" => "Liam Neeson" })
+holmes     = Actor.create!({ "name" => "Katie Holmes" })
+oldman     = Actor.create!({ "name" => "Gary Oldman" })
+
+ledger     = Actor.create!({ "name" => "Heath Ledger" })
+eckhart    = Actor.create!({ "name" => "Aaron Eckhart" })
+gyllenhaal = Actor.create!({ "name" => "Maggie Gyllenhaal" })
+
+hardy         = Actor.create!({ "name" => "Tom Hardy" })
+gordon_levitt = Actor.create!({ "name" => "Joseph Gordon-Levitt" })
+hathaway      = Actor.create!({ "name" => "Anne Hathaway" })
+
+Role.create!({ "movie_id" => bb.id, "actor_id" => bale.id,   "character_name" => "Bruce Wayne" })
+Role.create!({ "movie_id" => bb.id, "actor_id" => caine.id,  "character_name" => "Alfred" })
+Role.create!({ "movie_id" => bb.id, "actor_id" => neeson.id, "character_name" => "Ra's Al Ghul" })
+Role.create!({ "movie_id" => bb.id, "actor_id" => holmes.id, "character_name" => "Rachel Dawes" })
+Role.create!({ "movie_id" => bb.id, "actor_id" => oldman.id, "character_name" => "Commissioner Gordon" })
+
+Role.create!({ "movie_id" => tdk.id, "actor_id" => bale.id,      "character_name" => "Bruce Wayne" })
+Role.create!({ "movie_id" => tdk.id, "actor_id" => ledger.id,    "character_name" => "Joker" })
+Role.create!({ "movie_id" => tdk.id, "actor_id" => eckhart.id,   "character_name" => "Harvey Dent" })
+Role.create!({ "movie_id" => tdk.id, "actor_id" => caine.id,     "character_name" => "Alfred" })
+Role.create!({ "movie_id" => tdk.id, "actor_id" => gyllenhaal.id,"character_name" => "Rachel Dawes" })
+
+Role.create!({ "movie_id" => tdkr.id, "actor_id" => bale.id,         "character_name" => "Bruce Wayne" })
+Role.create!({ "movie_id" => tdkr.id, "actor_id" => oldman.id,       "character_name" => "Commissioner Gordon" })
+Role.create!({ "movie_id" => tdkr.id, "actor_id" => hardy.id,        "character_name" => "Bane" })
+Role.create!({ "movie_id" => tdkr.id, "actor_id" => gordon_levitt.id,"character_name" => "John Blake" })
+Role.create!({ "movie_id" => tdkr.id, "actor_id" => hathaway.id,     "character_name" => "Selina Kyle" })
+
+ari = Agent.create!({ "name" => "Ari Emanuel" })
+bale.update!({ "agent_id" => ari.id })
+
+
 # Movies
-# ======
+
 # Batman Begins          2005           PG-13  Warner Bros.
 # The Dark Knight        2008           PG-13  Warner Bros.
 # The Dark Knight Rises  2012           PG-13  Warner Bros.
 
 # Top Cast
-# ========
+
+
 # Batman Begins          Christian Bale        Bruce Wayne
 # Batman Begins          Michael Caine         Alfred
 # Batman Begins          Liam Neeson           Ra's Al Ghul
@@ -74,7 +120,8 @@ puts warner_bros.name
 # The Dark Knight Rises  Anne Hathaway         Selina Kyle
 
 # Represented by agent
-# ====================
+
+
 # Christian Bale
 
 # Delete existing data, so you'll start fresh each time this script is run.
@@ -92,15 +139,23 @@ puts warner_bros.name
 puts "Movies"
 puts "======"
 puts ""
+Movie.joins(:studio).order(:year_released).each do |m|
+  puts "%-22s %-14d %-6s %s" % [m.title, m.year_released, m.rated, m.studio.name]
+end
+
+
 
 # Query the movies data and loop through the results to display the movies output.
-# TODO!
+
 
 # Prints a header for the cast output
 puts ""
 puts "Top Cast"
 puts "========"
 puts ""
+Role.joins(:movie, :actor).order("movies.year_released ASC, roles.id ASC").each do |r|
+  puts "%-22s %-22s %s" % [r.movie.title, r.actor.name, r.character_name]
+end
 
 # Query the cast data and loop through the results to display the cast output for each movie.
 # TODO!
@@ -110,6 +165,9 @@ puts ""
 puts "Represented by agent"
 puts "===================="
 puts ""
+Actor.joins(:agent).where(agents: { id: ari.id }).each do |a|
+  puts a.name
+end
 
 # Query the actor data and loop through the results to display the agent's list of represented actors output.
 # TODO!

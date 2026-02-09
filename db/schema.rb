@@ -10,10 +10,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_09_220308) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_09_231329) do
+  create_table "actors", force: :cascade do |t|
+    t.integer "agent_id"
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_actors_on_agent_id"
+  end
+
+  create_table "agents", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "movies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "rated"
+    t.integer "studio_id"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.integer "year_released"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.integer "actor_id"
+    t.string "character_name"
+    t.datetime "created_at", null: false
+    t.integer "movie_id"
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_roles_on_actor_id"
+    t.index ["movie_id"], name: "index_roles_on_movie_id"
+  end
+
   create_table "studios", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "actors", "agents"
+  add_foreign_key "roles", "actors"
+  add_foreign_key "roles", "movies"
 end
